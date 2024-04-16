@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,10 @@ import okhttp3.Response;
 public class TabNewsFragment extends Fragment {
 
     private String url = "http://v.juhe.cn/toutiao/index?key=6911b0031067c358d726152b31c1199a&type=";
+
+    private View rootView;
+
+    private RecyclerView recyclerView;
 
     private static final String ARG_PARAM = "title";
 
@@ -60,7 +65,11 @@ public class TabNewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab_news, container, false);
+        rootView=inflater.inflate(R.layout.fragment_tab_news, container, false);
+
+        //初始化控件
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+        return rootView;
     }
 
     @Override
