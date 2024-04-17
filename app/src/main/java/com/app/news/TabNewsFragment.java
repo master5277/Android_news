@@ -122,8 +122,9 @@ public class TabNewsFragment extends Fragment {
             public void onItemClick(NewsInfo.ResultBean.DataBean dataBean, int position) {
                 //跳转详情页
                 Intent intent = new Intent(getActivity(), NewsDetailsActivity.class);
-                //
+                //传递对象的时候，该类一定要实现Serializable
                 intent.putExtra("dataDTO",dataBean);
+                startActivity(intent);
             }
         });
         //获取数据
