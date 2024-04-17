@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             @NonNull
             @Override
             public Fragment createFragment(int position) {
-                String title = titles.get(position).getTitle();
+                String title = titles.get(position).getPy_title();
                 TabNewsFragment tabNewsFragment = TabNewsFragment.newInstance(title);
                 return tabNewsFragment;
             }

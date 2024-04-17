@@ -1,5 +1,6 @@
 package com.app.news;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,11 +8,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.app.news.adapter.NewsListAdapter;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -34,10 +42,36 @@ public class TabNewsFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
+
+    private NewsListAdapter mNewsListAdapter;
     private static final String ARG_PARAM = "title";
 
 
     private String title;
+
+    private Handler mHandler = new Handler(Looper.myLooper())
+    {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if (msg.what==100)
+            {
+                String data = (String) msg.obj;
+                NewsInfo newsInfo = new Gson().fromJson(data, NewsInfo.class);
+                if (newsInfo !=null && newsInfo.getError_code()==0)
+                {
+                    //逻辑处理
+                    if (null != mNewsListAdapter)
+                    {
+                        mNewsListAdapter.setListData(newsInfo.getResult().getData());
+                    }
+                }else
+                {
+                    Toast.makeText(getActivity(),"数据获取失败，请稍后重试",Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
 
 
     public TabNewsFragment() {
@@ -76,6 +110,22 @@ public class TabNewsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //初始化适配器
+        mNewsListAdapter = new NewsListAdapter(getActivity());
+
+        //设置adapter
+        recyclerView.setAdapter(mNewsListAdapter);
+
+        //recyclerView列表点击事件
+        mNewsListAdapter.setmOnItemClickListener(new NewsListAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(NewsInfo.ResultBean.DataBean dataBean, int position) {
+                //跳转详情页
+                Intent intent = new Intent(getActivity(), NewsDetailsActivity.class);
+                //
+                intent.putExtra("dataDTO",dataBean);
+            }
+        });
         //获取数据
         getHttpData();
     }
@@ -100,7 +150,16 @@ public class TabNewsFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String data = response.body().string();
-                Log.d("-------------------", "onResponse: "+data);
+//                Log.d("-------------------", "onResponse: "+data);
+
+
+                //不能在耗时操作里面更新UI,那么需要使用Handler
+                Message message = new Message();
+                message.what=100;
+                message.obj=data;
+                //发送
+                mHandler.sendMessage(message);
+
             }
         });
     }

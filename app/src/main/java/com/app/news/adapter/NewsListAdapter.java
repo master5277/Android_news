@@ -1,5 +1,6 @@
 package com.app.news.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +12,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.news.NewsInfo;
 import com.app.news.R;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.MyHolder> {
 
-    private List<NewsInfo.ResultDTO.DataDTO> mDataDTOList = new ArrayList<>();
+    private List<NewsInfo.ResultBean.DataBean> mDataDTOList = new ArrayList<>();
 
-    public void setListData(List<NewsInfo.ResultDTO.DataDTO> listData)
+    private Context mContext;
+
+    public void setListData(List<NewsInfo.ResultBean.DataBean> listData)
     {
         this.mDataDTOList = listData;
 
         //这句话不可以少，一定要调用
         notifyDataSetChanged();
+    }
+
+    public NewsListAdapter(Context context)
+    {
+        this.mContext=context;
     }
 
     @NonNull
@@ -38,16 +47,27 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.MyHold
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         //绑定数据
-        NewsInfo.ResultDTO.DataDTO dataDTO = mDataDTOList.get(position);
+        NewsInfo.ResultBean.DataBean dataDTO = mDataDTOList.get(position);
 
         holder.title.setText(dataDTO.getTitle());
-        holder.author_name.setText("来源"+dataDTO.getAuthorName());
+        holder.author_name.setText("来源"+dataDTO.getAuthor_name());
         holder.date.setText(dataDTO.getDate());
 
 
         //加载图片
+        Glide.with(mContext).load(dataDTO.getThumbnail_pic_s()).error(R.mipmap.error_image).into(holder.thumbnail_pic_s);
 
 
+        //点击事件
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null!=mOnItemClickListener)
+                {
+                    mOnItemClickListener.onItemClick(dataDTO,position);
+                }
+            }
+        });
     }
 
     @Override
@@ -70,4 +90,19 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.MyHold
             date = itemView.findViewById(R.id.date);
         }
     }
+
+    private onItemClickListener mOnItemClickListener;
+
+
+    public void setmOnItemClickListener(onItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
+    }
+
+    public interface onItemClickListener
+    {
+        void onItemClick(NewsInfo.ResultBean.DataBean dataBean,int position);
+    }
+
+
+
 }
