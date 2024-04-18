@@ -11,6 +11,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.app.news.db.HistoryDbHelper;
+import com.google.gson.Gson;
+
 public class NewsDetailsActivity extends AppCompatActivity {
 
     private NewsInfo.ResultBean.DataBean dataBean;
@@ -35,6 +38,11 @@ public class NewsDetailsActivity extends AppCompatActivity {
         {
             toolbar.setTitle(dataBean.getTitle());
             mWebView.loadUrl(dataBean.getUrl());
+
+
+            //添加历史记录
+            String dataDTOJson = new Gson().toJson(dataBean);
+            HistoryDbHelper.getInstance(NewsDetailsActivity.this).addHistory(null,dataBean.getUniquekey(),dataDTOJson);
         }
 
         //返回
@@ -44,5 +52,9 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+//        //添加历史记录
+//        String dataDTOJson = new Gson().toJson(dataBean);
+//        HistoryDbHelper.getInstance(NewsDetailsActivity.this).addHistory(null,dataBean.getUniquekey(),dataDTOJson);
     }
 }

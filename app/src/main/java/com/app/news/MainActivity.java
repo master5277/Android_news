@@ -1,6 +1,8 @@
 package com.app.news;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tab_layout;
     private ViewPager2 viewPager;
 
+    private NavigationView nav_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,22 @@ public class MainActivity extends AppCompatActivity {
         //初始化控件
         tab_layout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.viewPager);
+        nav_view = findViewById(R.id.nav_view);
+
+        //点击事件
+        nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+                if (menuItem.getItemId()==R.id.nav_history)
+                {
+                 //跳转到历史记录
+                    Intent intent = new Intent(MainActivity.this, HistoryListActivity.class);
+                    startActivity(intent);
+                }
+                return true;
+            }
+        });
 
         //viewPager需要设置一个adapter
         viewPager.setAdapter(new FragmentStateAdapter(this) {
