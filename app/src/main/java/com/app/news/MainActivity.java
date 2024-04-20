@@ -1,11 +1,18 @@
 package com.app.news;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.app.news.db.UserDbHelper;
+import com.app.news.entity.UserInfo;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -39,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
 
     private NavigationView nav_view;
+    private TextView  tv_username;
+    private TextView tv_nickname;
+
+    private ImageView btn_open_drawerLayout;
+    private  DrawerLayout drawerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +76,14 @@ public class MainActivity extends AppCompatActivity {
         tab_layout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.viewPager);
         nav_view = findViewById(R.id.nav_view);
+        btn_open_drawerLayout = findViewById(R.id.btn_open_drawerLayout);
+        drawerLayout = findViewById(R.id.drawer_layout);
 
+        //不能直接findviewbyid下面两个
+//        tv_username = findViewById(R.id.tv_username);
+//        tv_nickname = findViewById(R.id.tv_nickname);
+        tv_username = nav_view.getHeaderView(0).findViewById(R.id.tv_username);
+        tv_nickname = nav_view.getHeaderView(0).findViewById(R.id.tv_nickname);
         //点击事件
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -74,8 +94,49 @@ public class MainActivity extends AppCompatActivity {
                  //跳转到历史记录
                     Intent intent = new Intent(MainActivity.this, HistoryListActivity.class);
                     startActivity(intent);
+                }else if (menuItem.getItemId()==R.id.nav_update_pwd)
+                {
+                    //跳转到修改密码
+                    Intent intent = new Intent(MainActivity.this,UpdatePwdActivity.class);
+                    startActivity(intent);
+                }else if (menuItem.getItemId()==R.id.nav_exit)
+                {
+                    UserInfo userInfo = UserInfo.getsUserInfo();
+                    if (null!=userInfo)
+                    {
+                        //退出登录
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("温馨提示")
+                                .setMessage("确认退出登录吗？")
+                                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                                        UserInfo.setsUserInfo(null);
+                                    }
+                                })
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .show();
+
+                    }else
+                    {
+                        Toast.makeText(MainActivity.this, "请先登录~~~", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 return true;
+            }
+        });
+
+        //打开抽屉
+        btn_open_drawerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.open();
             }
         });
 
@@ -126,6 +187,29 @@ public class MainActivity extends AppCompatActivity {
         //这句话不可以少
         tabLayoutMediator.attach();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UserInfo userInfo = UserInfo.getsUserInfo();
+        if (null!=userInfo)
+        {
+            tv_username.setText(userInfo.getUsername());
+            tv_nickname.setText(userInfo.getNickname());
+        }else
+        {
+            tv_username.setText("请登录");
+            tv_nickname.setText("");
+            //登录点击事件
+            tv_username.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
 }

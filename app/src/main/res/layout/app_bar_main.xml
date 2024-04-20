@@ -8,12 +8,17 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
     
-    <Toolbar
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
         android:navigationIcon="@drawable/baseline_menu_24"
         android:background="@color/purple_200">
         <ImageView
+            android:id="@+id/btn_open_drawerLayout"
+            android:src="@drawable/baseline_menu_24"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <RelativeLayout
@@ -38,7 +43,7 @@
                 android:text="搜索"/>
         </RelativeLayout>
 
-    </Toolbar>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 

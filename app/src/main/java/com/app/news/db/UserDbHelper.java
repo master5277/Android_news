@@ -66,19 +66,54 @@ public class UserDbHelper extends SQLiteOpenHelper {
         return userInfo;
     }
 
+    /**
+     * 检查用户是否已经添加进去
+     */
+    @SuppressLint("Range")
+    public boolean userIsHistory(String username) {
+        //获取SQLiteDatabase实例
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "select user_id,username,password,nickname  from user_table where username=?";
+        String[] selectionArgs = {username};
+        Cursor cursor = db.rawQuery(sql, selectionArgs);
+//        cursor.close();
+//        db.close();
+        return cursor.moveToNext();
+    }
     //注册
     public int register(String username, String password, String nickname) {
+        if (!userIsHistory(username))
+        {
+            //获取SQLiteDatabase实例
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues values = new ContentValues();
+            //填充占位符
+            values.put("username", username);
+            values.put("password", password);
+            values.put("nickname", nickname);
+            String nullColumnHack = "values(null,?,?,?)";
+            //执行
+            int insert = (int) db.insert("user_table", nullColumnHack, values);
+//        db.close();
+            return insert;
+        }
+        return  0;
+
+    }
+    /**
+     * 修改密码
+     */
+    public int updatePwd(String username, String password) {
         //获取SQLiteDatabase实例
         SQLiteDatabase db = getWritableDatabase();
+        // 填充占位符
         ContentValues values = new ContentValues();
-        //填充占位符
-        values.put("username", username);
         values.put("password", password);
-        values.put("nickname", nickname);
-        String nullColumnHack = "values(null,?,?,?)";
-        //执行
-        int insert = (int) db.insert("user_table", nullColumnHack, values);
-//        db.close();
-        return insert;
+        // 执行SQL
+        int update = db.update("user_table", values, " username=?", new String[]{username});
+        // 关闭数据库连接
+        db.close();
+        return update;
+
     }
 }
