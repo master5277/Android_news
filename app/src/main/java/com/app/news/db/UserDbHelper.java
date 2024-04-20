@@ -98,7 +98,6 @@ public class UserDbHelper extends SQLiteOpenHelper {
             return insert;
         }
         return  0;
-
     }
     /**
      * 修改密码
