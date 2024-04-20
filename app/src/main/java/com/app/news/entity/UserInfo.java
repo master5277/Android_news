@@ -5,12 +5,23 @@ public class UserInfo {
     private String username;
     private String password;
     private String nickname;
+    public static UserInfo sUserInfo;
+
 
     public UserInfo(int user_id, String username, String password, String nickname) {
         this.user_id = user_id;
         this.username = username;
         this.password = password;
         this.nickname = nickname;
+    }
+
+
+    public static UserInfo getsUserInfo() {
+        return sUserInfo;
+    }
+
+    public static void setsUserInfo(UserInfo userInfo) {
+        sUserInfo = userInfo;
     }
 
     public int getUser_id() {

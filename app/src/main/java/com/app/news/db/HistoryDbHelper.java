@@ -75,7 +75,7 @@ public class HistoryDbHelper extends SQLiteOpenHelper {
 
 
     /**
-     * username
+     * 检查历史记录是否已经添加进去
      */
     @SuppressLint("Range")
     public boolean isHistory(String uniquekey) {

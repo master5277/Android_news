@@ -86,6 +86,9 @@ public class LoginActivity extends AppCompatActivity {
                             //这句不能忘
                             edit.commit();
 
+                            //保存用户名和密码
+                            UserInfo.setsUserInfo(login);
+                            //登录完成
                             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                             startActivity(intent);
                             finish();
