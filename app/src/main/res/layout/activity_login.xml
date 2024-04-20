@@ -74,14 +74,28 @@
                 android:hint="请输入密码"
                 android:textSize="14sp"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
-        <TextView
-            android:id="@+id/register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="还未注册？"
-            android:layout_gravity="right"
-            android:textColor="@color/my_light_primary"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="记住密码"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/register"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:text="还未注册？"
+                android:layout_gravity="right"
+                android:textColor="@color/my_light_primary"/>
+        </RelativeLayout>
         <Button
             android:id="@+id/login"
             android:layout_width="match_parent"
